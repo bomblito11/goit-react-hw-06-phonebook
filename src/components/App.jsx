@@ -1,21 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 import PropTypes from 'prop-types';
-import { nanoid } from '../../node_modules/nanoid/index';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts, getFilter } from 'redux/selectors';
+import { addContact, deleteContact, filterContacts } from 'redux/actions';
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
-
-  useEffect(() => {
-    const dataFromLocal = localStorage.getItem('contacts');
-    const parsedDataFromLocal = JSON.parse(dataFromLocal);
-    if (parsedDataFromLocal) {
-      setContacts(parsedDataFromLocal);
-    }
-  }, []);
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (contacts.length > 0) {
@@ -36,23 +31,18 @@ export const App = () => {
     ) {
       alert(`${name} is already in contacts.`);
     } else {
-      setContacts([...contacts, { id: nanoid(), name, number }]);
+      dispatch(addContact(name, number));
       form.reset();
     }
   };
 
   const handleFilter = e => {
     const filter = e.currentTarget.value;
-    setFilter(filter);
+    dispatch(filterContacts(filter));
   };
 
   const handleDelete = id => {
-    const deletedContact = contacts.find(contact => contact.id === id);
-
-    const deletedContactIndex = contacts.indexOf(deletedContact);
-
-    contacts.splice(deletedContactIndex, 1);
-    setContacts([...contacts]);
+    dispatch(deleteContact(id));
   };
 
   return (
