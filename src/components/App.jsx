@@ -5,7 +5,8 @@ import { Filter } from './Filter/Filter';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContacts, getFilter } from 'redux/selectors';
-import { addContact, deleteContact, filterContacts } from 'redux/actions';
+import { addContact, deleteContact } from 'redux/contactsSlice';
+import { filterContacts } from 'redux/filterSlice';
 
 export const App = () => {
   const contacts = useSelector(getContacts);
